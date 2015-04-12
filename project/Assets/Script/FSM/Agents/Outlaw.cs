@@ -6,7 +6,7 @@ namespace FSM
 	public class Outlaw : Agent
 	{
 		public int BoredomCountdown = 0;
-		public int goldCarrying;
+		//public int goldCarrying;
 		public bool IsDead;
 
 		// Here is the StateMachine that the Outlaw uses to drive the agent's behaviour
@@ -27,7 +27,8 @@ namespace FSM
 			Location = Location.outlawCamp;
 			name = "OutLaw";
 		}
-		
+
+	
 		// This method is invoked by the Game object as a result of XNA updates 
 	    void Update()
 		{

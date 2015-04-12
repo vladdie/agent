@@ -10,7 +10,7 @@ namespace FSM
     public class Sheriff : Agent
     {
         public Boolean OutlawSpotted = false;
-		public int goldCarrying;
+		//public int goldCarrying;
 		public bool IsDead;
         // Here is the StateMachine that the Sheriff uses to drive the agent's behaviour
         private StateMachine<Sheriff> stateMachine;
@@ -34,7 +34,8 @@ namespace FSM
             stateMachine = new StateMachine<Sheriff>(this);
             stateMachine.CurrentState = new PatrolRandomLocation();
             stateMachine.GlobalState = new SheriffGlobalState();
-
+			name = "Sheriff";
+			ID = 4;
             Location = Location.sheriffsOffice;
         }
 

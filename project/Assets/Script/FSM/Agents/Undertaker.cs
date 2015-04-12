@@ -10,7 +10,7 @@ namespace FSM
     public class Undertaker : Agent
     {
         public int CorpseID = -1;
-		public string name = "Undertaker";
+		//public string name = "Undertaker";
         // Here is the StateMachine that the Outlaw uses to drive the agent's behaviour
         private StateMachine<Undertaker> stateMachine;
         public StateMachine<Undertaker> StateMachine
@@ -25,8 +25,9 @@ namespace FSM
             stateMachine = new StateMachine<Undertaker>(this);
             stateMachine.CurrentState = new HoverInTheOffice();
             stateMachine.GlobalState = new UndertakerGlobalState();
-
+			name = "Undertaker";
             Location = Location.undertakers;
+			ID = 5;
         }
 
         // This method is invoked by the Game object as a result of XNA updates 

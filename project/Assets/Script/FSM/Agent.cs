@@ -6,7 +6,7 @@ namespace FSM
     public abstract class Agent : MonoBehaviour
     {
         private static int agents = 0;
-
+		public int goldCarrying;
 		public static int AgentsCount
 		{
 			get { return agents;  }

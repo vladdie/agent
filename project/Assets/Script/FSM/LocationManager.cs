@@ -10,7 +10,7 @@ namespace FSM
     {
 
         public Dictionary<Location, Transform> Locations = new Dictionary<Location, Transform>();
-		public Dictionary<Location, int> obstancleDictionary = new Dictionary<int, int>();
+		public Dictionary<Location, int> obstancleDictionary = new Dictionary<Location, int>();
         void Awake()
         {
             var saloon = GameObject.FindGameObjectWithTag("saloon");

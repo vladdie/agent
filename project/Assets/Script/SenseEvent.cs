@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿
+using System.Collections;
 using UnityEngine;
 
 namespace FSM
@@ -30,22 +28,22 @@ namespace FSM
 
     public static class SenseEvent
     {
-        static AStar propogator = new AStar(AStar.SearchType.SensePropogation);
+        static AStar propogator = new AStar();
 
         static float SENSE_RANGE = 4.0f;
 
         public static void UpdateSensors()
         {
-            // Agents pairwise check
-            for (int i = 0; i < AgentManager.GetCount(); ++i)
+			var agentManager = Object.FindObjectOfType<AgentManager>();
+			for (int i = 0; i < agentManager.GetCount(); ++i)
             {
 				//between two agents
-                Agent a1 = AgentManager.GetAgent(i);
-                for (int j = 0; j < AgentManager.GetCount(); ++j)
+				Agent a1 = agentManager.GetAgent(i);
+				for (int j = 0; j < agentManager.GetCount(); ++j)
                 {
                     if (i != j)
                     {
-                        Agent a2 = AgentManager.GetAgent(j);
+						Agent a2 = agentManager.GetAgent(j);
 
                         // If close enough to detect
 						if (Vector3.Distance(a1.transform.position, a2.transform.position) < SENSE_RANGE)

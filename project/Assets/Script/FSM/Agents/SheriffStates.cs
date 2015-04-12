@@ -1,23 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 
 namespace FSM
 {
     public class PatrolRandomLocation : State<Sheriff>
     {
-        static Random rand = new Random();
+       // static Random rand = new Random();
 
         public override void Enter(Sheriff sheriff)
         {
-			Debug.Log(sheriff.name, ": is Arrived!");
+			Debug.Log(sheriff.name+ ": is Arrived!");
         }
 
         public override void Execute(Sheriff sheriff)
         {
-			Debug.Log(sheriff.name, ": is Patrolling in " + sheriff.getLocationName(sheriff.TargetLocation) + ".");
+			Debug.Log(sheriff.name+ ": is Patrolling in " + sheriff.getLocationName(sheriff.TargetLocation) + ".");
 
             if (!sheriff.OutlawSpotted)
             {
@@ -27,7 +25,7 @@ namespace FSM
 
         public override void Exit(Sheriff sheriff)
         {
-			Debug.Log(sheriff.name, ": is Leaving " + sheriff.getLocationName(sheriff.TargetLocation)  + ".");
+			Debug.Log(sheriff.name+ ": is Leaving " + sheriff.getLocationName(sheriff.TargetLocation)  + ".");
         }
 
         public override bool OnMessage(Sheriff agent, Telegram telegram)
@@ -46,21 +44,21 @@ namespace FSM
     {
         public override void Enter(Sheriff sheriff)
         {
-            Debug.Log(sheriff.name, "Arrived in bank.");
+            Debug.Log(sheriff.name+"Arrived in bank.");
         }
 
         public override void Execute(Sheriff sheriff)
         {
             sheriff.MoneyInBank += sheriff.goldCarrying;
             sheriff.goldCarrying = 0;
-            Debug.Log(sheriff.name, "Depositing gold. Total savings now: " + sheriff.MoneyInBank);
+            Debug.Log(sheriff.name+"Depositing gold. Total savings now: " + sheriff.MoneyInBank);
 
             sheriff.StateMachine.ChangeState(new SheriffTravelToTarget(Location.saloon, new CelebrateTheDayInSaloon()));
         }
 
         public override void Exit(Sheriff sheriff)
         {
-            Debug.Log(sheriff.name, "Leaving the Bank, time to celebrate!");
+            Debug.Log(sheriff.name+"Leaving the Bank, time to celebrate!");
         }
 
         public override bool OnMessage(Sheriff agent, Telegram telegram)
@@ -79,19 +77,19 @@ namespace FSM
     {
         public override void Enter(Sheriff sheriff)
         {
-            Debug.Log(sheriff.name, "Arrived in the saloon!");
+            Debug.Log(sheriff.name+"Arrived in the saloon!");
         }
 
         public override void Execute(Sheriff sheriff)
         {
-            Debug.Log(sheriff.name, "All drinks on me today!");
+            Debug.Log(sheriff.name+"All drinks on me today!");
 
             sheriff.StateMachine.ChangeState(new SheriffTravelToTarget(sheriff.ChooseNextLocation(), new PatrolRandomLocation()));
         }
 
         public override void Exit(Sheriff sheriff)
         {
-            Debug.Log(sheriff.name, "Leaving the saloon.");
+            Debug.Log(sheriff.name+"Leaving the saloon.");
         }
 
         public override bool OnMessage(Sheriff agent, Telegram telegram)
@@ -110,7 +108,7 @@ namespace FSM
     {
         public override void Enter(Sheriff sheriff)
         {
-            Debug.Log(sheriff.name, "Goodbye, cruel world!");
+            Debug.Log(sheriff.name+"Goodbye, cruel world!");
             sheriff.IsDead = true;
         }
 
@@ -123,7 +121,7 @@ namespace FSM
             sheriff.IsDead = false;
             sheriff.Location = Location.sheriffsOffice;
 
-            Debug.Log(sheriff.name, "It's a miracle, I am alive!");
+            Debug.Log(sheriff.name+"It's a miracle, I am alive!");
         }
 
         public override bool OnMessage(Sheriff agent, Telegram telegram)
@@ -139,29 +137,30 @@ namespace FSM
 
     public class SheriffTravelToTarget : TravelToTarget<Sheriff>
     {
-        public SheriffTravelToTarget(State<Sheriff> state)
+		public SheriffTravelToTarget(Location loc,State<Sheriff> state)
         {
             targetState = state;
+			targetLoc = loc;
         }
 
         public override void Enter(Sheriff sheriff)
         {
+			sheriff.TargetLocation = targetLoc;
 			var locManager = Object.FindObjectOfType<LocationManager>();
 			sheriff.ChangeLocation(locManager.Locations[sheriff.TargetLocation].position);
-
-			Debug.Log(sheriff.name, "Walkin' to " + sheriff.getLocationName(sheriff.TargetLocation)  + ".");
+			Debug.Log(sheriff.name+ ": Walkin' to " + sheriff.getLocationName(sheriff.TargetLocation)  + ".");
         }
 
         public override void Execute(Sheriff sheriff)
         {
 			var locManager = Object.FindObjectOfType<LocationManager>();
-			var target = locManager.Locations[Sheriff.TargetLocation].position;
+			var target = locManager.Locations[sheriff.TargetLocation].position;
 			target.y = 0;
 			
-			if (Vector3.Distance(target, Sheriff.transform.position) <= 3.0f)
+			if (Vector3.Distance(target, sheriff.transform.position) <= 3.0f)
 			{
-				Sheriff.Location = Sheriff.TargetLocation;
-				Sheriff.StateMachine.ChangeState(targetState);
+				sheriff.Location = sheriff.TargetLocation;
+				sheriff.StateMachine.ChangeState(targetState);
 			}
         }
 
@@ -205,30 +204,30 @@ namespace FSM
             {
                 case MessageType.Gunfight:
                     // Notify the undertaker
-                    Message.DispatchMessage(0, sheriff.name, "Bob", MessageType.Gunfight);
-
+					Message.DispatchMessage(0, sheriff.name, "OutLaw", MessageType.Gunfight);
+					var agentManager = Object.FindObjectOfType<AgentManager>();
                     // Gunfight
-                    Outlaw outlaw = (AgentManager.GetAgent(telegram.Sender) as Outlaw);
+					var outlaw = agentManager.GetAgent("OutLaw");
 
-                    if (Random.Range(10) == 1) // sheriff dies
-                    {
-
-                        outlaw.goldCarrying += sheriff.goldCarrying;
-                        sheriff.goldCarrying = 0;
-
-                        Message.DispatchMessage(0, sheriff.name, sheriff.name, MessageType.Dead);
-                    }
-                    else // outlaw dies
-                    {
-                        Debug.Log(sheriff.name, "I am not coward, but I am so strong. It is hard to die.");
-
-                        sheriff.goldCarrying += outlaw.goldCarrying;
-                        outlaw.goldCarrying = 0;
-
-                        Message.DispatchMessage(0, sheriff.name, outlaw.name, MessageType.Dead);
-
-                        sheriff.StateMachine.ChangeState(new SheriffTravelToTarget(Location.bank, new StopByBankAndDepositGold()));
-                    }
+					if (Random.Range(0,10) == 1) // sheriff dies
+						{
+						
+							outlaw.goldCarrying += sheriff.goldCarrying;
+							sheriff.goldCarrying = 0;
+							
+							Message.DispatchMessage(0, sheriff.name, sheriff.name, MessageType.Dead);
+						}
+						else // outlaw dies
+						{
+							Debug.Log(sheriff.name+"I am not coward, but I am so strong. It is hard to die.");
+						
+							sheriff.goldCarrying += outlaw.goldCarrying;
+							outlaw.goldCarrying = 0;
+						
+							Message.DispatchMessage(0, sheriff.name, outlaw.name, MessageType.Dead);
+						
+							sheriff.StateMachine.ChangeState(new SheriffTravelToTarget(Location.bank, new StopByBankAndDepositGold()));
+						}
 
                     sheriff.OutlawSpotted = false;
 
@@ -246,13 +245,14 @@ namespace FSM
 
         public override bool OnSenseEvent(Sheriff sheriff, Sense sense)
         {
+			var agentManager = Object.FindObjectOfType<AgentManager>();
             if (!sheriff.IsDead)
             {
-				if ("OutLaw" == AgentManager.GetAgent(sense.Sender).name) // outlaw spotted
+				if ("OutLaw" == agentManager.GetAgent(sense.Sender).name) // outlaw spotted
                 {
-                    if (!sheriff.OutlawSpotted && !AgentManager.GetAgent(sense.Sender).IsDead)
+					if (!sheriff.OutlawSpotted && !agentManager.GetAgent(sense.Sender).IsDead)
                     {
-                        Debug.Log(sheriff.name, "Sure glad to see you bandit, but hand me those guns.");
+                        Debug.Log(sheriff.name+"Sure glad to see you bandit, but hand me those guns.");
                         sheriff.OutlawSpotted = true;
                         Message.DispatchMessage(0, sheriff.name, sense.Sender, MessageType.SheriffEncountered);
 
@@ -261,7 +261,7 @@ namespace FSM
                 }
                 else // greetings
                 {
-                    Debug.Log(sheriff.name, "Good day, townie!");
+                    Debug.Log(sheriff.name+"Good day, townie!");
                     Message.DispatchMessage(0, sheriff.name, sense.Sender, MessageType.SheriffEncountered);
 
                     return true;
