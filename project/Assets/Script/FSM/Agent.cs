@@ -16,7 +16,7 @@ namespace FSM
         public Location TargetLocation { get; set; }
         public Location Location { get; set; }
 
-        public float speed = 1;
+        public float speed = 50;
         Vector3[] path;
         int targetIndex;
 

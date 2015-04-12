@@ -8,7 +8,7 @@ namespace FSM
 		public int BoredomCountdown = 0;
 		//public int goldCarrying;
 		public bool IsDead;
-
+		public string name = "OutLaw";
 		// Here is the StateMachine that the Outlaw uses to drive the agent's behaviour
 		private StateMachine<Outlaw> stateMachine;
 		public StateMachine<Outlaw> StateMachine
@@ -16,7 +16,12 @@ namespace FSM
 			get { return stateMachine; }
 			set { stateMachine = value; }
 		}
-		
+
+		public int GoldCarrying
+		{
+			get { return goldCarrying; }
+			set { goldCarrying = value; }
+		}
 		public Outlaw()
 			: base()
 		{
@@ -25,7 +30,7 @@ namespace FSM
 			stateMachine.GlobalState = new OutlawGlobalState();
 			ID = 3;
 			Location = Location.outlawCamp;
-			name = "OutLaw";
+			//name = "OutLaw";
 		}
 
 	

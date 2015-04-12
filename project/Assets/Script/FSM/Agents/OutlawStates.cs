@@ -90,8 +90,8 @@ namespace FSM
 		
 		public override void Execute(Outlaw outlaw)
 		{
-			outlaw.goldCarrying += 5;
-			Debug.Log(outlaw.name + ": Money owned now: " + outlaw.goldCarrying);
+			outlaw.GoldCarrying += 5;
+			Debug.Log(outlaw.name + ": Money owned now: " + outlaw.GoldCarrying);
 			outlaw.StateMachine.ChangeState(new OutlawTravelToTarget(outlaw.StateMachine.PreviousState.GetType() == typeof(LurkInOutlawCamp) ? Location.outlawCamp : Location.cemetery, outlaw.StateMachine.PreviousState));
 		}
 		

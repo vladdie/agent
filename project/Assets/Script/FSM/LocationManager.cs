@@ -64,5 +64,30 @@ namespace FSM
 			Locations.Add(Location.undertakers, undertakers.transform);
         }
 
-    }
+		public Location ChooseRandLocation(int locationIndex)
+		{
+			
+			switch (locationIndex)
+			{
+			case 0:
+				return Location.shack;
+			case 1:
+				return Location.goldMine;
+			case 2:
+				return Location.bank;
+			case 3:
+				return Location.saloon;
+			case 4:
+				return Location.outlawCamp;
+			case 5:
+				return Location.sheriffsOffice;
+			case 6:
+				return Location.undertakers;
+			case 7:
+				return Location.cemetery;
+			default:
+				return Location.saloon;
+			}
+		}
+	}
 }

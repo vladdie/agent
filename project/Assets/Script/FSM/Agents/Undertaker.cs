@@ -1,8 +1,5 @@
 ﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections;
 
 
 namespace FSM
@@ -10,6 +7,7 @@ namespace FSM
     public class Undertaker : Agent
     {
         public int CorpseID = -1;
+		public string name = "Undertaker";
 		//public string name = "Undertaker";
         // Here is the StateMachine that the Outlaw uses to drive the agent's behaviour
         private StateMachine<Undertaker> stateMachine;
@@ -25,7 +23,7 @@ namespace FSM
             stateMachine = new StateMachine<Undertaker>(this);
             stateMachine.CurrentState = new HoverInTheOffice();
             stateMachine.GlobalState = new UndertakerGlobalState();
-			name = "Undertaker";
+			//name = "Undertaker";
             Location = Location.undertakers;
 			ID = 5;
         }

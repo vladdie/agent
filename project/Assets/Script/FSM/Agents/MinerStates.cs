@@ -25,11 +25,13 @@ namespace FSM
 
             target.y = 0;
 
-            if (Vector3.Distance(target, miner.transform.position) <= 3.0f)
+            if (Vector3.Distance(target, miner.transform.position) <= 2.0f)
             {
                 miner.Location = miner.TargetLocation;
                 miner.StateMachine.RevertToPreviousState();
-            }
+			}else{
+
+			}
 
 
 

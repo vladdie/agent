@@ -13,7 +13,7 @@ namespace FSM
 
         private StateMachine<Miner> stateMachine;
         public int wifeId;
-        private int goldCarrying;
+       // private int goldCarrying;
         private int moneyInBank;
         private int howThirsty;
         private int howFatigued;
@@ -23,18 +23,18 @@ namespace FSM
             get { return stateMachine; }
             set { stateMachine = value; }
         }
-
+		public int GoldCarrying
+		{
+			get { return goldCarrying; }
+			set { goldCarrying = value; }
+		}
 //        public int WifeId
 //        {
 //            get { return wifeId; }
 //            set { wifeId = value; }
 //        }
 
-        public int GoldCarrying
-        {
-            get { return goldCarrying; }
-            set { goldCarrying = value; }
-        }
+       
         public int MoneyInBank
         {
             get { return moneyInBank; }

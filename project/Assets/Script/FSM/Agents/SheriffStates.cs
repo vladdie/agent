@@ -10,7 +10,7 @@ namespace FSM
 
         public override void Enter(Sheriff sheriff)
         {
-			Debug.Log(sheriff.name+ ": is Arrived!");
+			//Debug.Log(sheriff.name+ ": is Arrived!");
         }
 
         public override void Execute(Sheriff sheriff)
@@ -19,13 +19,16 @@ namespace FSM
 
             if (!sheriff.OutlawSpotted)
             {
-                sheriff.StateMachine.ChangeState(new SheriffTravelToTarget(sheriff.ChooseNextLocation(), new PatrolRandomLocation()));
-            }
-        }
+				sheriff.TargetLocation = sheriff.ChooseNextLocation();
+				Debug.Log (sheriff.name+": Patrol over. Next location is "+ sheriff.getLocationName(sheriff.TargetLocation));
+				sheriff.StateMachine.ChangeState(new SheriffTravelToTarget(sheriff.TargetLocation, new PatrolRandomLocation()));
+
+			}
+		}
 
         public override void Exit(Sheriff sheriff)
         {
-			Debug.Log(sheriff.name+ ": is Leaving " + sheriff.getLocationName(sheriff.TargetLocation)  + ".");
+			//Debug.Log(sheriff.name+ ": is Leaving " + sheriff.getLocationName(sheriff.TargetLocation)  + ".");
         }
 
         public override bool OnMessage(Sheriff agent, Telegram telegram)
@@ -58,7 +61,7 @@ namespace FSM
 
         public override void Exit(Sheriff sheriff)
         {
-            Debug.Log(sheriff.name+"Leaving the Bank, time to celebrate!");
+           // Debug.Log(sheriff.name+"Leaving the Bank, time to celebrate!");
         }
 
         public override bool OnMessage(Sheriff agent, Telegram telegram)
@@ -82,14 +85,14 @@ namespace FSM
 
         public override void Execute(Sheriff sheriff)
         {
-            Debug.Log(sheriff.name+"All drinks on me today!");
+            Debug.Log(sheriff.name+"All drinks on me today! Kidding!! Haha");
 
             sheriff.StateMachine.ChangeState(new SheriffTravelToTarget(sheriff.ChooseNextLocation(), new PatrolRandomLocation()));
         }
 
         public override void Exit(Sheriff sheriff)
         {
-            Debug.Log(sheriff.name+"Leaving the saloon.");
+           // Debug.Log(sheriff.name+"Leaving the saloon.");
         }
 
         public override bool OnMessage(Sheriff agent, Telegram telegram)
@@ -147,8 +150,10 @@ namespace FSM
         {
 			sheriff.TargetLocation = targetLoc;
 			var locManager = Object.FindObjectOfType<LocationManager>();
-			sheriff.ChangeLocation(locManager.Locations[sheriff.TargetLocation].position);
+
 			Debug.Log(sheriff.name+ ": Walkin' to " + sheriff.getLocationName(sheriff.TargetLocation)  + ".");
+			sheriff.ChangeLocation(locManager.Locations[sheriff.TargetLocation].position);
+			Debug.Log("*************************************");
         }
 
         public override void Execute(Sheriff sheriff)
@@ -156,8 +161,8 @@ namespace FSM
 			var locManager = Object.FindObjectOfType<LocationManager>();
 			var target = locManager.Locations[sheriff.TargetLocation].position;
 			target.y = 0;
-			
-			if (Vector3.Distance(target, sheriff.transform.position) <= 3.0f)
+			Debug.Log("##################################################");
+			if (Vector3.Distance(target, sheriff.transform.position) <= 5.0f)
 			{
 				sheriff.Location = sheriff.TargetLocation;
 				sheriff.StateMachine.ChangeState(targetState);
@@ -166,7 +171,7 @@ namespace FSM
 
         public override void Exit(Sheriff sheriff)
         {
-   
+			Debug.Log(sheriff.name+": reached the target location!");
         }
 
         public override bool OnMessage(Sheriff agent, Telegram telegram)
@@ -183,8 +188,6 @@ namespace FSM
     // If the agent has a global state, then it is executed every Update() cycle
     public class SheriffGlobalState : State<Sheriff>
     {
-        static Random rand = new Random();
-
         public override void Enter(Sheriff sheriff)
         {
         }
@@ -212,8 +215,8 @@ namespace FSM
 					if (Random.Range(0,10) == 1) // sheriff dies
 						{
 						
-							outlaw.goldCarrying += sheriff.goldCarrying;
-							sheriff.goldCarrying = 0;
+							outlaw.goldCarrying += sheriff.GoldCarrying;
+							sheriff.GoldCarrying = 0;
 							
 							Message.DispatchMessage(0, sheriff.name, sheriff.name, MessageType.Dead);
 						}
